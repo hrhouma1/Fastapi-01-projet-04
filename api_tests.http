@@ -1,0 +1,383 @@
+###############################################################################
+# 🚀 API CRUD FastAPI - Tests chronologiques et logiques
+# 
+# ⚠️  ORDRE IMPORTANT : Respectez cet ordre pour une utilisation cohérente !
+# 
+# 1️⃣ D'abord créer des UTILISATEURS
+# 2️⃣ Ensuite créer des ARTICLES pour ces utilisateurs
+# 3️⃣ Puis effectuer les opérations de consultation/modification
+# 4️⃣ Enfin nettoyer les données de test
+#
+# 📝 Instructions :
+# - Lancez d'abord votre API : python safe_start.py
+# - Exécutez ces requêtes dans l'ordre (utilisez VS Code avec l'extension REST Client)
+# - Modifiez les valeurs selon vos besoins
+###############################################################################
+
+@baseUrl = http://localhost:8000
+
+### 🏠 1. VÉRIFICATION - API en ligne
+GET {{baseUrl}}/
+Accept: application/json
+
+### 📊 2. ÉTAT INITIAL - Vérifier les données existantes
+
+# Voir tous les utilisateurs (doit être vide au début)
+GET {{baseUrl}}/users/
+Accept: application/json
+
+###
+
+# Voir tous les articles (doit être vide au début)
+GET {{baseUrl}}/items/
+Accept: application/json
+
+###############################################################################
+# 📁 ÉTAPE 1 : CRÉATION DES UTILISATEURS (OBLIGATOIRE EN PREMIER)
+###############################################################################
+
+### 👤 3. CRÉER UTILISATEUR 1 - Marie Dupont
+POST {{baseUrl}}/users/
+Content-Type: application/json
+
+{
+  "email": "marie.dupont@example.com",
+  "nom": "Dupont",
+  "prenom": "Marie",
+  "is_active": true
+}
+
+###
+
+### 👤 4. CRÉER UTILISATEUR 2 - Jean Martin
+POST {{baseUrl}}/users/
+Content-Type: application/json
+
+{
+  "email": "jean.martin@example.com", 
+  "nom": "Martin",
+  "prenom": "Jean",
+  "is_active": true
+}
+
+###
+
+### 👤 5. CRÉER UTILISATEUR 3 - Sophie Durand
+POST {{baseUrl}}/users/
+Content-Type: application/json
+
+{
+  "email": "sophie.durand@example.com",
+  "nom": "Durand", 
+  "prenom": "Sophie",
+  "is_active": false
+}
+
+###
+
+### ✅ 6. VÉRIFIER LES UTILISATEURS CRÉÉS
+GET {{baseUrl}}/users/
+Accept: application/json
+
+###############################################################################
+# 📦 ÉTAPE 2 : CRÉATION DES ARTICLES (APRÈS AVOIR LES UTILISATEURS)
+###############################################################################
+
+### 🛍️ 7. CRÉER ARTICLE 1 - Ordinateur portable (pour Marie, ID=1)
+POST {{baseUrl}}/users/1/items/
+Content-Type: application/json
+
+{
+  "title": "MacBook Pro 16 pouces",
+  "description": "Ordinateur portable excellent état, 32GB RAM, 1TB SSD",
+  "price": 250000,
+  "is_available": true
+}
+
+###
+
+### 🛍️ 8. CRÉER ARTICLE 2 - Smartphone (pour Marie, ID=1)
+POST {{baseUrl}}/users/1/items/
+Content-Type: application/json
+
+{
+  "title": "iPhone 15 Pro",
+  "description": "Smartphone récent, état neuf avec accessoires",
+  "price": 120000,
+  "is_available": true
+}
+
+###
+
+### 🛍️ 9. CRÉER ARTICLE 3 - Vélo (pour Jean, ID=2)
+POST {{baseUrl}}/users/2/items/
+Content-Type: application/json
+
+{
+  "title": "Vélo électrique",
+  "description": "VTT électrique, batterie autonomie 80km",
+  "price": 180000,
+  "is_available": true
+}
+
+###
+
+### 🛍️ 10. CRÉER ARTICLE 4 - Livre (pour Jean, ID=2)
+POST {{baseUrl}}/users/2/items/
+Content-Type: application/json
+
+{
+  "title": "Collection livres informatique",
+  "description": "20 livres sur Python, JavaScript, et DevOps",
+  "price": 15000,
+  "is_available": false
+}
+
+###
+
+### ❌ 11. TEST ERREUR - Créer article pour utilisateur inexistant (ID=999)
+# Cette requête DOIT échouer avec une erreur 404
+POST {{baseUrl}}/users/999/items/
+Content-Type: application/json
+
+{
+  "title": "Article impossible",
+  "description": "Cet article ne devrait pas être créé",
+  "price": 1000,
+  "is_available": true
+}
+
+###############################################################################
+# 🔍 ÉTAPE 3 : CONSULTATION DES DONNÉES
+###############################################################################
+
+### 📋 12. VOIR TOUS LES ARTICLES CRÉÉS
+GET {{baseUrl}}/items/
+Accept: application/json
+
+###
+
+### 👤 13. VOIR UTILISATEUR 1 AVEC SES ARTICLES
+GET {{baseUrl}}/users/1
+Accept: application/json
+
+###
+
+### 👤 14. VOIR UTILISATEUR 2 AVEC SES ARTICLES
+GET {{baseUrl}}/users/2
+Accept: application/json
+
+###
+
+### 📦 15. VOIR ARTICLE SPÉCIFIQUE (ID=1)
+GET {{baseUrl}}/items/1
+Accept: application/json
+
+###
+
+### 📋 16. PAGINATION - Voir seulement 2 articles
+GET {{baseUrl}}/items/?skip=0&limit=2
+Accept: application/json
+
+###############################################################################
+# ✏️ ÉTAPE 4 : MODIFICATIONS (UPDATE)
+###############################################################################
+
+### 👤 17. MODIFIER UTILISATEUR 1 - Changer le nom
+PUT {{baseUrl}}/users/1
+Content-Type: application/json
+
+{
+  "nom": "Dupont-Martin",
+  "prenom": "Marie-Claire"
+}
+
+###
+
+### 🛍️ 18. MODIFIER ARTICLE 1 - Réduire le prix
+PUT {{baseUrl}}/items/1
+Content-Type: application/json
+
+{
+  "price": 220000,
+  "description": "MacBook Pro 16 pouces - PRIX RÉDUIT ! 32GB RAM, 1TB SSD"
+}
+
+###
+
+### 🛍️ 19. MARQUER ARTICLE 2 COMME NON DISPONIBLE
+PUT {{baseUrl}}/items/2
+Content-Type: application/json
+
+{
+  "is_available": false
+}
+
+###
+
+### ✅ 20. VÉRIFIER LES MODIFICATIONS
+GET {{baseUrl}}/users/1
+Accept: application/json
+
+###############################################################################
+# 🔍 ÉTAPE 5 : TESTS DE RECHERCHE ET VALIDATION
+###############################################################################
+
+### 👤 21. CHERCHER UTILISATEUR PAR EMAIL (test logique métier)
+GET {{baseUrl}}/users/
+Accept: application/json
+
+# Note: Il faudrait ajouter un endpoint de recherche par email
+# GET {{baseUrl}}/users/search?email=marie.dupont@example.com
+
+###
+
+### ❌ 22. TEST ERREUR - Utilisateur inexistant
+GET {{baseUrl}}/users/999
+Accept: application/json
+
+###
+
+### ❌ 23. TEST ERREUR - Article inexistant
+GET {{baseUrl}}/items/999
+Accept: application/json
+
+###
+
+### ❌ 24. TEST ERREUR - Modifier utilisateur inexistant
+PUT {{baseUrl}}/users/999
+Content-Type: application/json
+
+{
+  "nom": "Utilisateur fantôme"
+}
+
+###############################################################################
+# 🗑️ ÉTAPE 6 : NETTOYAGE (ORDRE IMPORTANT !)
+# ⚠️ Supprimer d'abord les ARTICLES, puis les UTILISATEURS
+###############################################################################
+
+### 🗑️ 25. SUPPRIMER ARTICLE 1
+DELETE {{baseUrl}}/items/1
+Accept: application/json
+
+###
+
+### 🗑️ 26. SUPPRIMER ARTICLE 2  
+DELETE {{baseUrl}}/items/2
+Accept: application/json
+
+###
+
+### 🗑️ 27. SUPPRIMER ARTICLE 3
+DELETE {{baseUrl}}/items/3
+Accept: application/json
+
+###
+
+### 🗑️ 28. SUPPRIMER ARTICLE 4
+DELETE {{baseUrl}}/items/4
+Accept: application/json
+
+###
+
+### ✅ 29. VÉRIFIER QUE TOUS LES ARTICLES SONT SUPPRIMÉS
+GET {{baseUrl}}/items/
+Accept: application/json
+
+###
+
+### 🗑️ 30. SUPPRIMER UTILISATEUR 1 (maintenant sans articles)
+DELETE {{baseUrl}}/users/1
+Accept: application/json
+
+###
+
+### 🗑️ 31. SUPPRIMER UTILISATEUR 2
+DELETE {{baseUrl}}/users/2
+Accept: application/json
+
+###
+
+### 🗑️ 32. SUPPRIMER UTILISATEUR 3
+DELETE {{baseUrl}}/users/3
+Accept: application/json
+
+###
+
+### ✅ 33. VÉRIFICATION FINALE - Tout doit être vide
+GET {{baseUrl}}/users/
+Accept: application/json
+
+###
+
+GET {{baseUrl}}/items/
+Accept: application/json
+
+###############################################################################
+# 🧪 ÉTAPE 7 : TESTS AVANCÉS DE COHÉRENCE
+###############################################################################
+
+### 🧪 34. TEST CASCADE DELETE - Créer utilisateur et articles puis supprimer utilisateur
+POST {{baseUrl}}/users/
+Content-Type: application/json
+
+{
+  "email": "test.cascade@example.com",
+  "nom": "Test",
+  "prenom": "Cascade",
+  "is_active": true
+}
+
+###
+
+# Créer un article pour ce nouvel utilisateur (supposons ID=4)
+POST {{baseUrl}}/users/4/items/
+Content-Type: application/json
+
+{
+  "title": "Article de test CASCADE",
+  "description": "Cet article devrait être supprimé automatiquement",
+  "price": 1000,
+  "is_available": true
+}
+
+###
+
+# Vérifier que l'article a été créé
+GET {{baseUrl}}/items/
+Accept: application/json
+
+###
+
+# Supprimer l'utilisateur (doit supprimer automatiquement ses articles)
+DELETE {{baseUrl}}/users/4
+Accept: application/json
+
+###
+
+# Vérifier que l'article a bien été supprimé automatiquement
+GET {{baseUrl}}/items/
+Accept: application/json
+
+###############################################################################
+# 📚 DOCUMENTATION ET OUTILS
+###############################################################################
+
+### 📖 35. ACCÉDER À LA DOCUMENTATION INTERACTIVE
+# Ouvrez dans votre navigateur : http://localhost:8000/docs
+
+### 📊 36. ACCÉDER À LA DOCUMENTATION ALTERNATIVE
+# Ouvrez dans votre navigateur : http://localhost:8000/redoc
+
+###############################################################################
+# 💡 NOTES IMPORTANTES :
+#
+# 1. ✅ ORDRE OBLIGATOIRE : Utilisateurs → Articles → Modifications → Suppressions
+# 2. ⚠️  Ne jamais créer d'articles sans utilisateur propriétaire existant
+# 3. 🔄 La suppression d'un utilisateur supprime automatiquement ses articles (CASCADE)
+# 4. 💰 Les prix sont en centimes (ex: 250000 = 2500,00€)
+# 5. 📝 Les emails doivent être uniques
+# 6. 🔍 Utilisez la documentation interactive pour explorer l'API
+# 7. 🛠️ En cas de problème de port : python safe_start.py --auto-port
+###############################################################################
