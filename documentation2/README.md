@@ -73,6 +73,34 @@ Ce cours vous apprend à créer une application web complète avec FastAPI, incl
 - Patterns architecturaux globaux
 - Communication inter-couches détaillée
 
+### Module 12 : [Workflow interface graphique](12-workflow-interface-graphique.md)
+- Flux complet de démarrage GUI
+- Séquence d'appels et interactions
+- Phase par phase depuis run_gui.py
+- Workflow des actions utilisateur
+- Synchronisation inter-onglets détaillée
+
+### Module 13 : [Classification scripts par couches](13-classification-scripts-couches.md)
+- Classification de chaque script Python
+- Répartition Présentation/Business/Database
+- Justification détaillée par script
+- Tableau complet de classification
+- Règles et critères de classification
+
+### Module 14 : [Table des scripts](14-table-scripts.md)
+- Table complète des 16 scripts Python
+- Répartition statistique par couches
+- Tables par ordre alphabétique
+- Dépendances entre scripts
+- Technologies et patterns utilisés
+
+### Module 15 : [Exercice - Organisation par couches](15-exercice-organisation-couches.md)
+- Exercice pratique de réorganisation
+- Structure de dossiers par couches architecturales
+- Scripts de migration automatique
+- Validation et tests post-migration
+- Questions de réflexion et critères de réussite
+
 ## Comment utiliser ce cours
 
 ### Progression recommandée
