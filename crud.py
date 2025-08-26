@@ -110,3 +110,23 @@ def delete_item(db: Session, item_id: int):
     db.delete(db_item)
     db.commit()
     return True
+
+def search_items(db: Session, query: str, limit: int = 50):
+    """
+    Rechercher des articles par mot-clé dans le titre ou la description
+    
+    Args:
+        db: Session de base de données
+        query: Terme de recherche
+        limit: Nombre maximum de résultats
+    
+    Returns:
+        Liste des articles correspondants
+    """
+    # Recherche insensible à la casse dans le titre et la description
+    search_pattern = f"%{query}%"
+    
+    return db.query(models.Item).filter(
+        models.Item.title.ilike(search_pattern) |
+        models.Item.description.ilike(search_pattern)
+    ).limit(limit).all()

@@ -10,6 +10,8 @@ Une API complète développée avec FastAPI qui implémente toutes les opératio
 - ✅ **Documentation automatique** avec Swagger UI
 - ✅ **Relations entre entités** (utilisateurs ↔ articles)
 - ✅ **Gestion des erreurs** et codes de statut HTTP appropriés
+- 🆕 **Interface graphique PySide6** moderne et intuitive
+- 🆕 **Client API intégré** pour communication GUI ↔ API
 
 ## Structure du projet
 
@@ -21,7 +23,7 @@ projetsfastapi/
 ├── models.py         # Modèles SQLAlchemy (tables de base de données)
 ├── schemas.py        # Schémas Pydantic (validation et sérialisation)
 ├── crud.py           # Opérations CRUD
-├── requirements.txt  # Dépendances Python
+├── requirements.txt  # Dépendances Python (FastAPI + PySide6)
 ├── exemple_utilisation.py  # Script de test de l'API
 ├── api_tests.http    # Tests HTTP chronologiques avec REST Client
 ├── test_coherence.py # Test rapide de cohérence des données
@@ -29,8 +31,21 @@ projetsfastapi/
 ├── setup.sh          # Script de configuration automatique (macOS/Linux)
 ├── safe_start.py     # Script de démarrage sécurisé avec gestion des ports
 ├── check_ports.py    # Diagnostic et gestion des ports de développement
+├── gui_client/       # 🆕 Interface graphique PySide6
+│   ├── __init__.py   #     Package principal GUI
+│   ├── api_client.py #     Client de communication API
+│   ├── main_window.py #    Interface utilisateur complète
+│   └── README.md     #     Guide rapide GUI
+├── run_gui.py        # 🆕 Script de lancement interface graphique
+├── setup_gui.py      # 🆕 Configuration automatique GUI
+├── test_gui_integration.py # 🆕 Tests d'intégration GUI ↔ API
 ├── GUIDE_GESTION_PROCESSUS.md  # Guide complet de gestion des processus
 ├── documentation/    # Documentation de formation complète (8 modules)
+├── documentation1/   # 🆕 Documentation professionnelle (sans emojis)
+│   ├── 01-GUIDE_SEED_DATA.md    # Guide des données d'exemple
+│   ├── 02-URLS_TESTS.md         # URLs testables complètes  
+│   ├── 03-guide-execution.md    # Guide d'exécution étape par étape
+│   └── 04-interface-graphique.md # 🆕 Guide complet de l'interface GUI
 ├── URLS_TESTS.md     # Liste complète de toutes les URLs à tester
 ├── seed_data.py      # Script pour ajouter des données d'exemple
 ├── GUIDE_SEED_DATA.md # Guide détaillé des données d'exemple
@@ -43,20 +58,22 @@ projetsfastapi/
 
 ### Option A : Configuration automatique (recommandée)
 
-**Sur Windows :**
+**Configuration complète (API + Interface graphique) :**
 ```bash
+# Windows
 setup.bat
-```
 
-**Sur macOS/Linux :**
-```bash
+# macOS/Linux  
 ./setup.sh
+
+# Configuration spécifique GUI
+python setup_gui.py
 ```
 
 Ces scripts vont automatiquement :
 - Créer l'environnement virtuel
-- Installer toutes les dépendances
-- Vous donner les instructions pour lancer l'API
+- Installer toutes les dépendances (FastAPI + PySide6)
+- Vous donner les instructions pour lancer l'API et l'interface
 
 ### Option B : Configuration manuelle
 
@@ -122,7 +139,21 @@ python check_ports.py --kill-port 8000
 - **Documentation Swagger** : http://localhost:8000/docs
 - **Documentation ReDoc** : http://localhost:8000/redoc
 
-### 5. Désactiver l'environnement virtuel
+### 5. 🆕 Lancer l'interface graphique (optionnel)
+
+```bash
+# Terminal séparé - Interface graphique moderne
+python run_gui.py
+```
+
+**Avantages de l'interface graphique :**
+- ✅ Gestion visuelle des utilisateurs et articles
+- ✅ Recherche en temps réel
+- ✅ Formatage automatique des prix
+- ✅ Indicateur de connexion à l'API
+- ✅ Interface moderne et intuitive
+
+### 6. Désactiver l'environnement virtuel
 
 Quand vous avez terminé de travailler sur le projet :
 
@@ -154,6 +185,12 @@ deactivate
 | `GET` | `/items/{item_id}` | Récupérer un article par ID |
 | `PUT` | `/items/{item_id}` | Mettre à jour un article |
 | `DELETE` | `/items/{item_id}` | Supprimer un article |
+
+### Recherche
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| `GET` | `/search/items?q=terme&limit=50` | 🆕 Rechercher des articles par mots-clés |
 
 > **⚠️ ORDRE IMPORTANT :** Vous devez d'abord créer des utilisateurs, puis créer des articles pour ces utilisateurs. La création d'un article pour un utilisateur inexistant retournera une erreur 404.
 
@@ -205,6 +242,19 @@ curl -X PUT "http://localhost:8000/users/1" \
 
 ```bash
 curl -X DELETE "http://localhost:8000/items/1"
+```
+
+### 🆕 Rechercher des articles
+
+```bash
+# Recherche simple
+curl -X GET "http://localhost:8000/search/items?q=iPhone"
+
+# Recherche avec limite de résultats
+curl -X GET "http://localhost:8000/search/items?q=macbook&limit=10"
+
+# Recherche avec espaces (URL encodée)
+curl -X GET "http://localhost:8000/search/items?q=Python%20livre"
 ```
 
 ## Modèles de données

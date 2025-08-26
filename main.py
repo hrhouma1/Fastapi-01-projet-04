@@ -133,6 +133,26 @@ def delete_item(item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Article non trouvé")
     return {"message": "Article supprimé avec succès"}
 
+# Endpoint de recherche
+@app.get("/search/items", response_model=List[schemas.Item], tags=["Search"])
+def search_items(q: str, limit: int = 50, db: Session = Depends(get_db)):
+    """
+    Rechercher des articles par mot-clé dans le titre ou la description
+    
+    Args:
+        q: Terme de recherche (minimum 2 caractères)
+        limit: Nombre maximum de résultats (défaut: 50, max: 100)
+    """
+    if len(q.strip()) < 2:
+        raise HTTPException(status_code=400, detail="Le terme de recherche doit contenir au moins 2 caractères")
+    
+    if limit > 100:
+        limit = 100
+    
+    # Recherche dans la base de données
+    items = crud.search_items(db, query=q.strip(), limit=limit)
+    return items
+
 if __name__ == "__main__":
     import uvicorn
     import socket
