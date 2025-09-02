@@ -1,0 +1,3 @@
+"""
+Interface graphique PySide6
+"""
